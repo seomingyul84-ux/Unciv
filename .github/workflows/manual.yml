@@ -1,4 +1,4 @@
-name: Manual APK Build
+name: Manual Multi-Build
 on:
   workflow_dispatch:
 jobs:
@@ -11,10 +11,25 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      # 윈도우용 빌드
+      - name: Build Windows
+        run: ./gradlew desktop:dist
+
+      # 안드로이드용 빌드
       - name: Build Android
         run: ./gradlew android:assembleRelease
-      - name: Upload APK
+
+      # 윈도우 파일 업로드
+      - name: Upload Windows Build
         uses: actions/upload-artifact@v4
         with:
-          name: Unciv-Custom-APK
+          name: Unciv-Windows-Custom
+          path: desktop/build/libs/*.jar
+
+      # 안드로이드 파일 업로드
+      - name: Upload Android APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unciv-Android-Custom
           path: android/build/outputs/apk/release/*.apk
