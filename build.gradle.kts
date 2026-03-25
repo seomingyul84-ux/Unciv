@@ -86,6 +86,7 @@ project(":desktop") {
         "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
         "implementation"("com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion")
         "implementation"("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
+        "implementation"("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
         "implementation"("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
             exclude("com.badlogicgames.gdx", "gdx-backend-lwjgl")
         }
