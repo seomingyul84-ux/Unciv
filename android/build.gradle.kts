@@ -6,7 +6,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // [추가] Firebase 구글 서비스 플러그인 - 이 줄이 있어야 google-services.json을 인식합니다
+    // [추가] Firebase 구글 서비스 플러그인
     id("com.google.gms.google-services")
 }
 
@@ -69,7 +69,7 @@ android {
     }
     compileOptions {
         targetCompatibility = JavaVersion.VERSION_1_8
-        // [중요] Firebase는 최신 자바 기능을 쓰기 때문에 이 설정이 필수입니다
+        // [중요] Firebase 라이브러리 지원을 위한 설정
         isCoreLibraryDesugaringEnabled = true
     }
     androidResources {
@@ -143,8 +143,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.10.3")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 
-    // [추가] Firebase 라이브러리 실장
-    // 최상단 build.gradle.kts에 적어준 classpath와 연동되어 작동합니다.
+    // [추가] Firebase 라이브러리
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     implementation("com.google.firebase:firebase-database-ktx")
 }
