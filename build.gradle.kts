@@ -18,7 +18,7 @@ buildscript {
         val kotlinVersion: String by project
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.android.tools.build:gradle:8.9.3")
-        // [추가] Firebase 구글 서비스 플러그인
+        // [수정] Firebase 구글 서비스 플러그인 추가
         classpath("com.google.gms:google-services:4.4.2")
     }
 }
@@ -127,7 +127,7 @@ if (getSdkPath() != null) {
     project(":android") {
         apply(plugin = "com.android.application")
         apply(plugin = "kotlin-android")
-        // [추가] Google 서비스 플러그인 적용
+        // [수정] Google 서비스 플러그인 적용
         apply(plugin = "com.google.gms.google-services")
 
         val natives by configurations.creating
@@ -138,7 +138,7 @@ if (getSdkPath() != null) {
             "implementation"("com.badlogicgames.gdx:gdx-backend-android:$gdxVersion")
             "implementation"("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             
-            // [추가] Firebase 라이브러리 (BOM 방식을 사용하여 버전 관리 일원화)
+            // [수정] Firebase 라이브러리 추가
             "implementation"(platform("com.google.firebase:firebase-bom:33.0.0"))
             "implementation"("com.google.firebase:firebase-database-ktx")
 
