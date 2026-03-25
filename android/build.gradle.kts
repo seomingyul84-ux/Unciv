@@ -1,4 +1,3 @@
-
 import com.unciv.build.AndroidImagePacker
 import com.unciv.build.BuildConfig
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -7,6 +6,8 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    // [추가] Firebase 구글 서비스 플러그인 적용
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -24,7 +25,6 @@ android {
     }
     packaging {
         resources.excludes += "META-INF/robovm/ios/robovm.xml"
-        // part of kotlinx-coroutines-android, should not go into the apk
         resources.excludes += "DebugProbesKt.bin"
     }
     defaultConfig {
@@ -38,15 +38,11 @@ android {
         base.archivesName.set("Unciv")
     }
 
-    // necessary for Android Work lib
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_1_8
         }
     }
-
-    // Had to add this crap for Travis to build, it wanted to sign the app
-    // but couldn't create the debug keystore for some reason
 
     signingConfigs {
         getByName("debug") {
@@ -62,7 +58,6 @@ android {
             isDebuggable = true
         }
         release {
-            // If you make this true you get a version of the game that just flat-out doesn't run
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             isDebuggable = false
@@ -70,14 +65,13 @@ android {
     }
 
     lint {
-        disable += "MissingTranslation"   // see res/values/strings.xml
+        disable += "MissingTranslation"
     }
     compileOptions {
         targetCompatibility = JavaVersion.VERSION_1_8
         isCoreLibraryDesugaringEnabled = true
     }
     androidResources {
-        // Don't add local save files and fonts to release, obviously
         ignoreAssetsPattern = "!SaveFiles:!fonts:!maps:!music:!mods"
     }
     buildFeatures {
@@ -93,9 +87,6 @@ tasks.register("texturePacker") {
     }
 }
 
-// called every time gradle gets executed, takes the native dependencies of
-// the natives configuration, and extracts them to the proper libs/ folders
-// so they get packed with the APK.
 tasks.register("copyAndroidNatives") {
     val natives: Configuration by configurations
 
@@ -117,7 +108,6 @@ tasks.register("copyAndroidNatives") {
 }
 
 tasks.whenTaskAdded {
-    // See https://github.com/yairm210/Unciv/issues/4842
     if ("package" in name || "assemble" in name || "bundleRelease" in name) {
         dependsOn("copyAndroidNatives")
     }
@@ -147,11 +137,12 @@ tasks.register<Exec>("run") {
 }
 
 dependencies {
+    // [기존 유지]
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.work:work-runtime-ktx:2.10.3")
-    // Needed to convert e.g. Android 26 API calls to Android 21
-    // If you remove this run `./gradlew :android:lintDebug` to ensure everything's okay.
-    // If you want to upgrade this, check it's working by building an apk,
-    //   or by running `./gradlew :android:assembleRelease` which does that
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+
+    // [추가] Firebase 라이브러리 (최상단 build.gradle.kts에서 정의한 설정과 연결됨)
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-database-ktx")
 }
