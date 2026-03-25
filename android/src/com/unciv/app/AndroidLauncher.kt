@@ -15,6 +15,9 @@ import java.lang.Exception
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+// [추가] Firebase 라이브러리
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 
 open class AndroidLauncher : AndroidApplication() {
 
@@ -56,6 +59,24 @@ open class AndroidLauncher : AndroidApplication() {
 
         game!!.setDeepLinkedGame(intent)
         game!!.addScreenObscuredListener()
+
+        // ✨ [추가] 앱 시작 시 Firebase에서 데이터 불러오기
+        loadFromFirebase()
+    }
+
+    // ✨ [추가] Firebase 불러오기 로직
+    private fun loadFromFirebase() {
+        try {
+            val database = Firebase.database.reference
+            database.child("saves").child("last_game_state").get().addOnSuccessListener { snapshot ->
+                val remoteData = snapshot.value as? String
+                if (remoteData != null && game != null) {
+                    game!!.loadGameFromString(remoteData)
+                }
+            }
+        } catch (e: Exception) {
+            Log.error("Firebase 로드 실패", e)
+        }
     }
 
     /**
@@ -79,6 +100,9 @@ open class AndroidLauncher : AndroidApplication() {
     }
 
     override fun onPause() {
+        // ✨ [추가] 앱 나갈 때 Firebase에 자동 저장
+        saveToFirebase()
+
         val game = this.game!!
         if (game.isInitializedProxy()
                 && game.gameInfo != null
@@ -95,6 +119,20 @@ open class AndroidLauncher : AndroidApplication() {
             }
         }
         super.onPause()
+    }
+
+    // ✨ [추가] Firebase 저장 로직
+    private fun saveToFirebase() {
+        val currentGame = game ?: return
+        try {
+            if (currentGame.isInitializedProxy() && currentGame.gameInfo != null) {
+                val gameData = currentGame.gameInfo!!.serialize()
+                val database = Firebase.database.reference
+                database.child("saves").child("last_game_state").setValue(gameData)
+            }
+        } catch (e: Exception) {
+            Log.error("Firebase 저장 실패", e)
+        }
     }
 
     override fun onResume() {
