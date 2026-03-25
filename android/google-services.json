@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "888600190614",
+    "project_id": "unciv-d3a97",
+    "storage_bucket": "unciv-d3a97.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888600190614:android:bf8b1becca6879951cacb7",
+        "android_client_info": {
+          "package_name": "com.unciv.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfXEy60r7z7GgXbL-RvoCDJoAXS30KKq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
